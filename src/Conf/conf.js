@@ -6,3 +6,5 @@ const conf ={
   appwriteBucketId: String(import.meta.env.VITE_APPWRITE_Bucket_ID),
 
 }
+
+export default conf 
