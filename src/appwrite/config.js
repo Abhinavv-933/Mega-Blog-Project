@@ -6,6 +6,7 @@ export class Service{
     client = new Client();
     databases;
     bucket;
+    
     constructor(){
         this.client
             .setEndpoint(conf.appwriteurl)
@@ -22,7 +23,7 @@ export class Service{
                 slug,
                 {
                     title,
-                    clug,
+                    slug,
                     content,
                     featuredImage,
                     status,
@@ -71,7 +72,7 @@ export class Service{
     async getPost(slug){
         try {
             return await this.databases.getDocument(
-                conf.appwriteurl,
+                conf.appwriteDatabaseId,
                 conf.appwriteCollectionId,
                 slug
             )
@@ -113,7 +114,7 @@ export class Service{
 
     async deleteFile(fileId){
         try {
-            return await this.deleteFile(
+            return await this.bucket.deleteFile(
                 conf.appwriteBucketId,
                 fileId
             )
