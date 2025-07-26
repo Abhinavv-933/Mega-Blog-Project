@@ -11,23 +11,30 @@ function Signup() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const { register, handleSubmit } = useForm();
 
   const create = async (data) => {
     setError('');
+    setLoading(true);
     try {
       console.log('📨 Creating account...');
-      const user = await authService.createAccount(data); // now returns user
+      await authService.createAccount(data); // creates account & session
 
-      console.log('✅ Account created:', user);
+      console.log('✅ Account created, fetching user...');
+      const userData = await authService.getCurrentUser();
 
-      if (user) {
-        dispatch(Login({ userData: user }));
+      if (userData) {
+        dispatch(Login({ userData }));
         navigate('/');
+      } else {
+        throw new Error('User data not found after signup');
       }
     } catch (error) {
       console.error('❌ Signup error:', error);
       setError(error?.message || 'Something went wrong');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -75,9 +82,9 @@ function Signup() {
             type="password"
             {...register('password', { required: true })}
           />
-         <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? "Creating..." : "Create Account"}
-         </Button>
+          <Button type="submit" className="w-full" disabled={loading}>
+            {loading ? 'Creating...' : 'Create Account'}
+          </Button>
         </form>
       </div>
     </div>
